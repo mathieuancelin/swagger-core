@@ -8,3 +8,6 @@ samples/scala-play2/logs
 .project
 .classpath
 .cache
+.DS_Store
+*.jar
+*.zip
