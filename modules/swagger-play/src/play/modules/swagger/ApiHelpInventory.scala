@@ -16,11 +16,12 @@
 
 package play.modules.swagger
 
-import org.codehaus.jackson.map.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import play.{Play, Logger}
 
 import collection.mutable.ListBuffer
 import com.wordnik.swagger.core._
+import com.wordnik.swagger.annotations._
 import com.wordnik.swagger.play._
 
 import javax.xml.bind.JAXBContext

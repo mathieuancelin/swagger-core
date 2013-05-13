@@ -1,11 +1,10 @@
 self: play -> swagger-play 0.1
 
 require:
-    - com.wordnik -> swagger-core_2.8.1 1.2-SNAPSHOT
-    - com.sun.jersey -> jersey-core 1.7:
-        exclude:
-          - org.slf4j -> *
-          - org.jboss.weld -> *
+    - com.wordnik -> swagger-core_2.9.1 1.2.3
+    - com.wordnik -> swagger-annotations_2.9.1 1.2.3
+    - org.scala-lang -> scala-library 2.9.1
+
 repositories:
     - sonatype:
         type:       iBiblio
