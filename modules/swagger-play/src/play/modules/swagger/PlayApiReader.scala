@@ -112,7 +112,42 @@ class PlayApiSpecParser(_hostClass: Class[_], _apiVersion: String, _swaggerVersi
   }
 
   override def processParamAnnotations(docParam: DocumentationParameter,paramAnnotations: Array[java.lang.annotation.Annotation], method: Method): Boolean = {
-    false
+    var ignoreParam = false
+    for (pa <- paramAnnotations) {
+      pa match {
+        case apiParam: ApiParam => {
+          parseApiParam(docParam, apiParam, method)
+        }
+        case wsParam: QueryParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.paramType = readString(TYPE_QUERY, docParam.paramType)
+        }
+        case wsParam: PathParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.required = true
+          docParam.paramType = readString(TYPE_PATH, docParam.paramType)
+        }
+        case wsParam: MatrixParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.paramType = readString(TYPE_MATRIX, docParam.paramType)
+        }
+        case wsParam: HeaderParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.paramType = readString(TYPE_HEADER, docParam.paramType)
+        }
+        case wsParam: FormParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.paramType = readString(TYPE_FORM, docParam.paramType)
+        }
+        case wsParam: CookieParam => {
+          docParam.name = readString(wsParam.value, docParam.name)
+          docParam.paramType = readString(TYPE_COOKIE, docParam.paramType)
+        }
+        case wsParam: Context => ignoreParam = true
+        case _ => Unit
+      }
+    }
+    ignoreParam
   }
   
   /**
