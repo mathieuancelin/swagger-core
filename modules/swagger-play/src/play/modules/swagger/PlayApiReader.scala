@@ -26,6 +26,9 @@ import java.lang.reflect.Method
 
 import play.mvc.Router
 import play.Logger
+import javax.ws.rs._
+import javax.ws.rs.core.Context
+import com.wordnik.swagger.core.ApiValues._
 import play.classloading.enhancers.LocalvariablesNamesEnhancer
 
 object PlayApiReader {
@@ -66,8 +69,19 @@ class PlayApiSpecParser(_hostClass: Class[_], _apiVersion: String, _swaggerVersi
     // set param names from method signatures
     // assuming natural order
     if (o.getParameters() != null && o.getParameters().length > 0) {
-      val paramNames = LocalvariablesNamesEnhancer.lookupParameterNames(method).toList
-
+      var paramNames = List[String]()
+      try {
+        paramNames = LocalvariablesNamesEnhancer.lookupParameterNames(method).toList
+      } catch {
+        case e => {
+          var i = 0
+          for (param <- o.getParameters()) {
+            paramNames = paramNames :+ ("arg" + i)
+            i = i + 1
+          }
+          play.Logger.error("Problem while extracting params from '" + method.toString + "' : " + e)
+        }
+      }
       if (paramNames.length == o.getParameters().length) {
         var index = 0
         for (param <- o.getParameters()) {
