@@ -176,6 +176,7 @@ class PlayApiSpecParser(_hostClass: Class[_], _apiVersion: String, _swaggerVersi
    */
   private def getRoute(method: Method) = Router.routes.find((route) => {
     val parts = route.action.split("\\.")
+
     if (parts.length == 2) {
       val className = parts(0)
       val methodName = parts(1)
@@ -186,7 +187,12 @@ class PlayApiSpecParser(_hostClass: Class[_], _apiVersion: String, _swaggerVersi
       // checking indexOf instead of equals to be compatible with scala where $ may be suffixed to controller class name
       targetClassName.indexOf(className) == 0 && targetMethodName.equals(methodName)
     } else {
-      false
+      val length = parts.length
+      val className = parts.take(length - 1).mkString(".")
+      val methodName = parts.takeRight(1).head
+      val targetClassName = method.getDeclaringClass.getName.replace("controllers.", "")
+      val targetMethodName = method.getName
+      targetClassName.equals(className) && targetMethodName.equals(methodName)
     }
   })
 }
