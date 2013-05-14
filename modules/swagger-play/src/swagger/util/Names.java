@@ -1,4 +1,4 @@
-package main;
+package swagger.util;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;

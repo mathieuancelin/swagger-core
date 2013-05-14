@@ -30,7 +30,7 @@ import javax.ws.rs._
 import javax.ws.rs.core.Context
 import com.wordnik.swagger.core.ApiValues._
 import play.classloading.enhancers.LocalvariablesNamesEnhancer
-import main.Names
+import swagger.util.Names
 
 object PlayApiReader {
   private val endpointsCache = scala.collection.mutable.Map.empty[Class[_], Documentation]
@@ -72,14 +72,10 @@ class PlayApiSpecParser(_hostClass: Class[_], _apiVersion: String, _swaggerVersi
     if (o.getParameters() != null && o.getParameters().length > 0) {
       var paramNames = List[String]()
       try {
-        paramNames = main.Names.lookupParameterNames(method).toList
+        paramNames = swagger.util.Names.lookupParameterNames(method).toList
       } catch {
         case e => {
-          var i = 0
-          for (param <- o.getParameters()) {
-            paramNames = paramNames :+ ("arg" + i)
-            i = i + 1
-          }
+          paramNames = o.getParameters().zipWithIndex.map { t => "arg" + t._2 }.toList
           play.Logger.error("Problem while extracting params from '" + method.toString + "' : " + e)
         }
       }
